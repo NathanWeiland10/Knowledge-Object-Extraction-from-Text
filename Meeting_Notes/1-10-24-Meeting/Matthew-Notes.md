@@ -36,16 +36,16 @@ ____________
 							      |
 							      |
 							      |
-	______________________________|___________
-	|				|						|
+	___________________________________________________________
+	|			|				|
 	|		      	|                		|
 	|		      	|               		|
 	|		      	|                		|
 	(ETC) (Destroys Amazon Rainforest)   (On the Epstein List)
-										 |		|		|
-										 |		|		|
-										 |		|		|
-										(X1)   (X2)    (X3)
+						|	|	|
+						|	|	|
+						|	|	|
+						(X1)   (X2)    (X3)
 
 
 If each X has a Likelihood/Confidence/Precision we can use those to calculate how accurate the parent node is to be Likely/Confident/Precise.
