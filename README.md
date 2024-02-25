@@ -4,7 +4,7 @@ Group project for CEG4120 (Managing Softw Dev Proc)
 
 ## Important Links:
 ### Figma
-* [Figma Document](https://www.figma.com/proto/yigLXbqFhUM0d08wnWwYZO/Matador-Intelligence?page-id=0%3A1&type=design&node-id=31-14&viewport=240%2C68%2C0.15&t=prX087bFNqJJPOW8-1&scaling=scale-down&starting-point-node-id=31%3A14)
+* [Figma Document](https://www.figma.com/file/yigLXbqFhUM0d08wnWwYZO/Matador-Intelligence?type=design&node-id=0-1&mode=design&t=4lI3q5NsBOsNoIih-0)
 * [Figma Presentation](https://www.figma.com/proto/yigLXbqFhUM0d08wnWwYZO/Matador-Intelligence?page-id=0%3A1&type=design&node-id=31-14&viewport=240%2C68%2C0.15&t=prX087bFNqJJPOW8-1&scaling=scale-down&starting-point-node-id=31%3A14)
 
 ### Sharepoint
