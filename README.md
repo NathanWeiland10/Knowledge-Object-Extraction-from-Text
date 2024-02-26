@@ -1,6 +1,6 @@
 # MatadorIntelligence
-Group project for CEG4120 (Managing Softw Dev Proc)
-![gantt_chart](https://github.com/NathanWeiland10/MatadorIntelligence/assets/77362517/5de205c6-9190-4114-bbeb-d086a57d66c6)
+Group project for CEG4120 (Managing the Software Development Process)
+![Gantt Chart for Project](doc/img/gantt_chart.png)
 
 ## Important Links:
 ### Figma

@@ -25,11 +25,17 @@
     padding: 1rem;
     border: 1px solid #1E1E1E;
     width: 60%;
+    min-width: 250px;
 }
 
 .btn-custom-color {
     padding-left: 2rem;
     padding-right: 2rem;
     background-color: #25ADE8;
+    color: white;
+}
+
+.btn-custom-color:hover {
+    background-color: #197ca7;
     color: white;
 }
