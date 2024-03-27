@@ -87,7 +87,7 @@ async function extractKeywords(document, tokenizer, model) {
     //const domainSpecificData = /* Load your domain-specific corpus */;
     //await fineTuneModel(tokenizer, model, domainSpecificData);
 
-    const document = /* User's document */;
+    const document = ;
     //const knowledgeGraph = {};
     const keywords = await extractKeywords(document, tokenizer, model)
     //await buildKnowledgeGraph(document, tokenizer, model, knowledgeGraph);
