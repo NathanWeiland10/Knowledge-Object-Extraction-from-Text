@@ -43,20 +43,20 @@ async function buildKnowledgeGraph(document, tokenizer, model, knowledgeGraph) {
 
 
 // Extract keywords and phrases
-async function extractKeywords(document, tokenizer, model) {
-    // Tokenize input
-    const inputs = tokenizer.encode(document, { return_tensors: 'pt' });
+// async function extractKeywords(document, tokenizer, model) {
+//     // Tokenize input
+//     const inputs = tokenizer.encode(document, { return_tensors: 'pt' });
 
-    // Run inference
-    const outputs = await model(inputs);
+//     // Run inference
+//     const outputs = await model(inputs);
 
-    // Process outputs to extract keywords
-    // Example: Extract top words from output embeddings
-    const embeddings = outputs.last_hidden_state;
-    // Post-processing code goes here
+//     // Process outputs to extract keywords
+//     // Example: Extract top words from output embeddings
+//     const embeddings = outputs.last_hidden_state;
+//     // Post-processing code goes here
 
-    return extractedKeywords;
-}
+//     return extractedKeywords;
+// }
 async function extractKeywords(document, tokenizer, model) {
     // Tokenize input
     const inputs = tokenizer.encode(document, { return_tensors: 'tf' });
@@ -108,21 +108,21 @@ console.log("Relevant Phrases:", relevantPhrases);
 
 */
 
-(async () => {
-    const { tokenizer, model } = await loadBertModel();
-    //const domainSpecificData = /* Load your domain-specific corpus */;
-    //await fineTuneModel(tokenizer, model, domainSpecificData);
+// (async () => {
+//     const { tokenizer, model } = await loadBertModel();
+//     //const domainSpecificData = /* Load your domain-specific corpus */;
+//     //await fineTuneModel(tokenizer, model, domainSpecificData);
 
-    const document = ;
-    //const knowledgeGraph = {};
-    const keywords = await extractKeywords(document, tokenizer, model)
-    //await buildKnowledgeGraph(document, tokenizer, model, knowledgeGraph);
+//     const document = ;
+//     //const knowledgeGraph = {};
+//     const keywords = await extractKeywords(document, tokenizer, model)
+//     //await buildKnowledgeGraph(document, tokenizer, model, knowledgeGraph);
     
-    //visualizeGraph(knowledgeGraph);
-    console.log("Keywords: ", keywords)
-})();
+//     //visualizeGraph(knowledgeGraph);
+//     console.log("Keywords: ", keywords)
+// })();
 // Example usage
 const text = "Your input text goes here. This is just a sample text for demonstration purposes.";
 const numKeyTerms = 5;
-const keyTerms = extractKeyTerms(text, numKeyTerms);
+const keyTerms = extractKeywords(text, numKeyTerms);
 console.log("Key terms:", keyTerms);
