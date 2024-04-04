@@ -122,7 +122,9 @@ console.log("Relevant Phrases:", relevantPhrases);
 //     console.log("Keywords: ", keywords)
 // })();
 // Example usage
+console.log("Hello  World");
 const text = "Your input text goes here. This is just a sample text for demonstration purposes.";
 const numKeyTerms = 5;
 const keyTerms = extractKeywords(text, numKeyTerms);
 console.log("Key terms:", keyTerms);
+console.log("Hello  World 2");
