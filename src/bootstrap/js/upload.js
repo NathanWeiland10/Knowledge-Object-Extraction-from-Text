@@ -1,69 +1,113 @@
 const formData = new FormData();
 
-document.getElementById('form').addEventListener('submit', function (e) {
-    e.preventDefault();
-    const userFile = document.getElementById('file').files[0];
+// document.getElementById('form').addEventListener('submit', function (e) {
+//     e.preventDefault();
+//     const userFile = document.getElementById('file').files[0];
 
-    formData.append('user-file', userFile, 'user-file.pdf');
+//     formData.append('user-file', userFile, 'user-file.pdf');
 
-    fetch('https://httpbin.org/post', {
-        method: "POST",
-        body: formData,
-    })
-        .then(res => res.json())
-        .then(data => console.log(data))
-        .catch(err => console.log(err));
-})
+//     fetch('https://httpbin.org/post', {
+//         method: "POST",
+//         body: formData,
+//     })
+//         .then(res => res.json())
+//         .then(data => console.log(data))
+//         .catch(err => console.log(err));
+// })
 
+let filePath = "";
 
 const form = document.querySelector('form');
 const statusMessage = document.getElementById('statusMessage');
-const submitButton = document.getElementById('submitButton');
+// const submitButton = document.getElementById('submitButton');
 const fileInput = document.querySelector('input');
 const progressBar = document.querySelector('progress');
 const fileNum = document.getElementById('fileNum');
 const fileListMetadata = document.getElementById('fileListMetadata');
 const sentencesWithKeywords = [];
 
-const exportButton = document.getElementById('exportbutton');
+// const exportButton = document.getElementById('exportbutton');
 
-form.addEventListener('submit', handleSubmit);
-fileInput.addEventListener('change', handleInputChange);
+const continueButton = document.getElementById('continuebutton');
+
+// form.addEventListener('submit', handleSubmit);
+fileInput.addEventListener('change', handleFileSelect);
 
 // Get the text from the URL query parameter
-var queryString = window.location.search;
-var urlParams = new URLSearchParams(queryString);
-var text = urlParams.get('text');
+// var queryString = window.location.search;
+// var urlParams = new URLSearchParams(queryString);
+// var text = urlParams.get('text');
 
-var textCleanedDots = text.replace(/•/g, '');
-var textArray = textCleanedDots.split(',,');
+// var textCleanedDots = text.replace(/•/g, '');
+// var textArray = textCleanedDots.split(',,');
 
-textArray.forEach(function (word, index) {
-    textArray[index] = word.replace(/,/g, ''); // Removing excess commas
-});
+// textArray.forEach(function (word, index) {
+//     textArray[index] = word.replace(/,/g, ''); // Removing excess commas
+// });
 
-textArray.forEach(function (word, index) {
-    textArray[index] = word.replace(/ \s+/g, ' '); // Removing excess spaces
-});
+// textArray.forEach(function (word, index) {
+//     textArray[index] = word.replace(/ \s+/g, ' '); // Removing excess spaces
+// });
 
-textArray.forEach(function (word, index) {
-    textArray[index] = word.trim(); // Trimming each keyword / keyphrase
-});
+// textArray.forEach(function (word, index) {
+//     textArray[index] = word.trim(); // Trimming each keyword / keyphrase
+// });
 
 // Populate the list with each word
-var userList = document.getElementById("userText");
-textArray.forEach(function (word) {
-    var listItem = document.createElement("li");
-    listItem.textContent = word;
-    userList.appendChild(listItem);
-});
+// var userList = document.getElementById("userText");
+// textArray.forEach(function (word) {
+//     var listItem = document.createElement("li");
+//     listItem.textContent = word;
+//     userList.appendChild(listItem);
+// });
 
-function handleSubmit(event) {
-    event.preventDefault();
+function handleFileSelect() {
+    const file = fileInput.files[0];
+
+    if (file) {
+        filePath = URL.createObjectURL(file);
+        handleSubmit();
+
+        const reader = new FileReader();
+        reader.onload = function (event) {
+            const arrayBuffer = event.target.result; // Obtained ArrayBuffer
+            const arrayBufferString = arrayBufferToString(arrayBuffer); // Convert ArrayBuffer to string
+            sessionStorage.setItem('fileData', arrayBufferString); // Store the ArrayBuffer in sessionStorage
+        };
+        reader.readAsArrayBuffer(file); // Read file as ArrayBuffer
+    } else {
+        console.log("Error: File not selected");
+    }
+}
+
+function arrayBufferToString(buffer) {
+    return String.fromCharCode.apply(null, new Uint8Array(buffer));
+}
+
+function arrayBufferToString(buffer) {
+    const bytes = new Uint8Array(buffer);
+    let binary = '';
+    for (let i = 0; i < bytes.byteLength; i++) {
+        binary += String.fromCharCode(bytes[i]);
+    }
+    return binary;
+}
+
+function stringToArrayBuffer(str) {
+    const buffer = new ArrayBuffer(str.length);
+    const bufferView = new Uint8Array(buffer);
+    for (let i = 0; i < str.length; i++) {
+        bufferView[i] = str.charCodeAt(i);
+    }
+    return buffer;
+}
+
+function handleSubmit() {
+    const file = fileInput.files[0];
 
     showPendingState();
 
-    uploadFiles();
+    uploadFiles(file);
 }
 
 function handleInputChange() {
@@ -76,16 +120,17 @@ function handleInputChange() {
         return;
     }
 
-    submitButton.disabled = false;
+    // submitButton.disabled = false;
 }
 
-function uploadFiles() {
+function uploadFiles(file) {
     const url = 'https://httpbin.org/post';
     const method = 'post';
 
     const xhr = new XMLHttpRequest();
 
-    const data = new FormData(form);
+    const data = new FormData();
+    data.append('user-file', file, 'user-file.pdf');
 
     xhr.upload.addEventListener('progress', (event) => {
         updateStatusMessage(`⏳ Uploaded ${event.loaded} bytes of ${event.total}`);
@@ -95,8 +140,8 @@ function uploadFiles() {
     xhr.addEventListener('loadend', () => {
         if (xhr.status === 200) {
             updateStatusMessage('✅ Success');
-            renderFilesMetadata(fileInput.files);
-            readPDF(fileInput.files[0]);
+            renderFilesMetadata([file]);
+            readPDF(file);
         } else {
             updateStatusMessage('❌ Error');
         }
@@ -113,12 +158,12 @@ function updateStatusMessage(text) {
 }
 
 function showPendingState() {
-    submitButton.disabled = true;
+    // submitButton.disabled = true;
     updateStatusMessage('⏳ Pending...');
 }
 
 function resetFormState() {
-    submitButton.disabled = true;
+    // submitButton.disabled = true;
     updateStatusMessage(`🤷‍♂ Nothing's uploaded`);
 
     fileListMetadata.textContent = '';
@@ -174,9 +219,10 @@ function assertFilesValid(fileList) {
 }
 
 function readPDF(file) {
+    console.log("filePath" + filePath);
     const reader = new FileReader();
     const textContent = [];
-    const keywordList = textArray;
+    // const keywordList = textArray;
 
     reader.onload = function (event) {
         const pdfData = event.target.result;
@@ -210,28 +256,28 @@ function readPDF(file) {
             // Updated to split on · and • for bullet pointed lists
             const sentences = fullText.split(/(?<!\b(?:Mr|Mrs|Ms|Dr)\.)\s*[\.\?!•·](?=\s*[A-Z])/g);
 
-            console.log(keywordList);
+            // console.log(keywordList);
 
             // Filter sentences containing keywords
             sentences.forEach((sentence) => {
                 const normalizedSentence = sentence.replace(/\s+/g, ' ').trim();
 
 
-                if (keywordList.some(keyword => normalizedSentence.toLowerCase().includes(keyword.toLowerCase()))) {
-                    sentencesWithKeywords.push(normalizedSentence);
-                }
+                // if (keywordList.some(keyword => normalizedSentence.toLowerCase().includes(keyword.toLowerCase()))) {
+                //     sentencesWithKeywords.push(normalizedSentence);
+                // }
             });
 
-            console.log('Sentences with Keywords:', sentencesWithKeywords);
+            // console.log('Sentences with Keywords:', sentencesWithKeywords);
 
             // Output how many sentences were found containing keywords
-            fileListMetadata.insertAdjacentHTML(
-                'beforeend',
-                `
-          <li>
-            <p><strong>Keyword Matches:</strong> ${sentencesWithKeywords.length} sentences found containing the provided keywords</p>
-          </li>`,
-            );
+        //     fileListMetadata.insertAdjacentHTML(
+        //         'beforeend',
+        //         `
+        //   <li>
+        //     <p><strong>Keyword Matches:</strong> ${sentencesWithKeywords.length} sentences found containing the provided keywords</p>
+        //   </li>`,
+        //     );
 
         }).catch((error) => {
             console.error('Error reading PDF:', error);
@@ -241,7 +287,13 @@ function readPDF(file) {
     reader.readAsArrayBuffer(file);
 }
 
-exportButton.addEventListener('click', function () {
-    sessionStorage.setItem('sentencesWithKeywords', JSON.stringify(sentencesWithKeywords));
-    window.location.href = 'export.html';
+// exportButton.addEventListener('click', function () {
+//     sessionStorage.setItem('sentencesWithKeywords', JSON.stringify(sentencesWithKeywords));
+//     window.location.href = 'export.html';
+// });
+
+continueButton.addEventListener('click', function () {
+    // sessionStorage.setItem('sentencesWithKeywords', JSON.stringify(sentencesWithKeywords));
+    // window.location.href = "upload.html?text=";
+    window.location.href = 'test.html?filepath=' + encodeURIComponent(filePath);
 });

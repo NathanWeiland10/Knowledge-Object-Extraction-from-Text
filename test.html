@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Uploader</title>
+    <style>
+        #pdfEmbed {
+            width: 100%;
+            height: 500px;
+        }
+    </style>
+</head>
+
+<body>
+    <input type="file" id="fileInput" accept=".pdf">
+    <br>
+    <embed id="pdfEmbed" src="" type="application/pdf">
+    <script>
+        document.getElementById('fileInput').addEventListener('change', function (event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const blobUrl = URL.createObjectURL(file);
+                    const embed = document.getElementById('pdfEmbed');
+                    embed.setAttribute('src', blobUrl);
+                }
+                reader.readAsArrayBuffer(file);
+            }
+        });
+    </script>
+</body>
+
+</html>
