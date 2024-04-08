@@ -4,7 +4,6 @@ const filePath = urlParams.get('filepath');
 
 document.addEventListener('DOMContentLoaded', function () {
     const fileDataString = sessionStorage.getItem('fileData');
-    console.log('File Data:', fileDataString); // Log file data string to console
 
     if (fileDataString) {
         const arrayBuffer = stringToArrayBuffer(fileDataString); // Convert the string back to ArrayBuffer
