@@ -1,4 +1,6 @@
 var keywordList = [];
+var matchedSentences = [];
+const sentenceList = document.getElementById('tab-2');
 
 function updateKeywords() {
     var textOutput = document.getElementById("textOutput");
@@ -40,11 +42,13 @@ function renderKeywordList(container) {
     });
 }
 
-function readPDF(file) {
-    console.log("filePath" + filePath);
+function readPDF() {
+    const fileDataString = sessionStorage.getItem('fileData');
+    const arrayBuffer = stringToArrayBuffer(fileDataString); // Convert the string back to ArrayBuffer
+    const blob = new Blob([arrayBuffer], { type: 'application/pdf' });
+
     const reader = new FileReader();
     const textContent = [];
-    // const keywordList = textArray;
 
     reader.onload = function (event) {
         const pdfData = event.target.result;
@@ -78,36 +82,44 @@ function readPDF(file) {
             // Updated to split on · and • for bullet pointed lists
             const sentences = fullText.split(/(?<!\b(?:Mr|Mrs|Ms|Dr)\.)\s*[\.\?!•·](?=\s*[A-Z])/g);
 
-            // console.log(keywordList);
-
             // Filter sentences containing keywords
-            sentences.forEach((sentence) => {
+            const filteredSentences = sentences.filter((sentence) => {
                 const normalizedSentence = sentence.replace(/\s+/g, ' ').trim();
-
-
-                if (keywordList.some(keyword => normalizedSentence.toLowerCase().includes(keyword.toLowerCase()))) {
-                    sentenceList.insertAdjacentHTML(
-                        'beforeend',
-                        `<p>- ${sentence}</p>`,
-                    );
-                }
+                return keywordList.some(keyword => normalizedSentence.toLowerCase().includes(keyword.toLowerCase()));
             });
 
-            // console.log('Sentences with Keywords:', sentencesWithKeywords);
+            // Add HTML for each filtered sentence
+            filteredSentences.forEach((sentence) => {
+                if (!matchedSentences.includes(sentence)) {
+                    matchedSentences.push(sentence);
 
-            // Output how many sentences were found containing keywords
-            //     fileListMetadata.insertAdjacentHTML(
-            //         'beforeend',
-            //         `
-            //   <li>
-            //     <p><strong>Keyword Matches:</strong> ${sentencesWithKeywords.length} sentences found containing the provided keywords</p>
-            //   </li>`,
-            //     );
+                    var listItem = document.createElement("li");
+                    listItem.className = "list-item";
+            
+                    var itemText = document.createElement("span");
+                    itemText.textContent = sentence;
+                    itemText.classList.add("clickable");
+                    listItem.appendChild(itemText);
+                    sessionStorage.setItem('sentencesWithKeywords', JSON.stringify(matchedSentences));
+            
+                    listItem.addEventListener("click", function () {
+                        this.remove();
+                        matchedSentences = matchedSentences.filter(item => item !==sentence);
+                        sessionStorage.setItem('sentencesWithKeywords', JSON.stringify(matchedSentences));
+                    });
+            
+                    sentenceList.appendChild(listItem);
+                }
+            });
 
         }).catch((error) => {
             console.error('Error reading PDF:', error);
         });
     };
 
-    reader.readAsArrayBuffer(file);
+    reader.readAsArrayBuffer(blob);
+}
+
+function sendToExport() {
+    sessionStorage.setItem('sentencesWithKeywords', JSON.stringify(matchedSentences));
 }

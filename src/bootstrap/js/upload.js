@@ -91,6 +91,7 @@ function uploadFiles(file) {
         if (xhr.status === 200) {
             updateStatusMessage('✅ Success');
             renderFilesMetadata([file]);
+            continueButton.style.display = 'block';
             // readPDF(file);
         } else {
             updateStatusMessage('❌ Error');
@@ -174,5 +175,5 @@ function assertFilesValid(fileList) {
 continueButton.addEventListener('click', function () {
     // sessionStorage.setItem('sentencesWithKeywords', JSON.stringify(sentencesWithKeywords));
     // window.location.href = "upload.html?text=";
-    window.location.href = 'test.html?filepath=' + encodeURIComponent(filePath);
+    window.location.href = 'keywords.html?filepath=' + encodeURIComponent(filePath);
 });
