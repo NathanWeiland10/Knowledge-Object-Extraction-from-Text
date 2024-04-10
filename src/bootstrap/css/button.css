@@ -1,0 +1,16 @@
+.animate-button:active {
+  background-color: #004080 !important;
+  animation: scaleEffect 0.03s ease;
+}
+
+@keyframes scaleEffect {
+  0% {
+      transform: scale(1);
+  }
+  50% {
+      transform: scale(0.95);
+  }
+  100% {
+      transform: scale(1);
+  }
+}

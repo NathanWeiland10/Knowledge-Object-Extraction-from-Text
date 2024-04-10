@@ -1,6 +1,6 @@
 var keywordList = [];
 var matchedSentences = [];
-const sentenceList = document.getElementById('tab-2');
+const sentenceList = document.getElementById('annotations');
 
 function updateKeywords() {
     var textOutput = document.getElementById("textOutput");
@@ -13,8 +13,8 @@ function updateKeywords() {
 
     // Add new words to the keywordList
     textArray.forEach(function (word) {
-        if (word !== '' && !keywordList.includes(word)) {
-            keywordList.push(word);
+        if (word !== '' && !keywordList.includes(word.toLowerCase())) {
+            keywordList.push(word.toLowerCase());
         }
     });
 
@@ -28,18 +28,48 @@ function renderKeywordList(container) {
         var listItem = document.createElement("li");
         listItem.className = "list-item";
 
-        var itemText = document.createElement("span");
-        itemText.textContent = word;
-        itemText.classList.add("clickable");
-        listItem.appendChild(itemText);
-
-        listItem.addEventListener("click", function () {
-            this.remove();
+        // Create trashcan icon
+        var trashIcon = document.createElement("i");
+        trashIcon.className = "fas fa-trash-alt";
+        trashIcon.style.marginRight = "5px";
+        trashIcon.style.color = "red";
+        trashIcon.addEventListener("click", function () {
+            listItem.remove();
             keywordList = keywordList.filter(item => item !== word);
         });
 
+        var itemText = document.createElement("span");
+        itemText.textContent = word;
+        itemText.classList.add("clickable");
+        listItem.appendChild(trashIcon);
+        listItem.appendChild(itemText);
+
         container.appendChild(listItem);
     });
+}
+
+function addBlankAnnotation() {
+    var listItem = document.createElement("li");
+    listItem.className = "list-item";
+
+    // Create trashcan icon
+    var trashIcon = document.createElement("i");
+    trashIcon.className = "fas fa-trash-alt";
+    trashIcon.style.marginRight = "5px";
+    trashIcon.style.color = "red";
+    trashIcon.addEventListener("click", function () {
+        listItem.remove();
+    });
+
+    var itemText = document.createElement("div");
+    itemText.textContent = "(Enter annotation here)";
+    itemText.classList.add("editable");
+    itemText.contentEditable = true;
+    listItem.appendChild(trashIcon);
+    listItem.appendChild(itemText);
+
+    var sentenceList = document.getElementById('annotations');
+    sentenceList.appendChild(listItem);
 }
 
 function readPDF() {
@@ -88,38 +118,37 @@ function readPDF() {
                 return keywordList.some(keyword => normalizedSentence.toLowerCase().includes(keyword.toLowerCase()));
             });
 
-            // Add HTML for each filtered sentence
             filteredSentences.forEach((sentence) => {
-                if (!matchedSentences.includes(sentence)) {
-                    matchedSentences.push(sentence);
-
+                if (!matchedSentences.includes(sentence.toLowerCase())) {
+                    matchedSentences.push(sentence.toLowerCase());
+            
                     var listItem = document.createElement("li");
                     listItem.className = "list-item";
             
-                    var itemText = document.createElement("span");
-                    itemText.textContent = sentence;
-                    itemText.classList.add("clickable");
-                    listItem.appendChild(itemText);
-                    sessionStorage.setItem('sentencesWithKeywords', JSON.stringify(matchedSentences));
-            
-                    listItem.addEventListener("click", function () {
-                        this.remove();
-                        matchedSentences = matchedSentences.filter(item => item !==sentence);
-                        sessionStorage.setItem('sentencesWithKeywords', JSON.stringify(matchedSentences));
+                    // Create trashcan icon
+                    var trashIcon = document.createElement("i");
+                    trashIcon.className = "fas fa-trash-alt";
+                    trashIcon.style.marginRight = "5px";
+                    trashIcon.style.color = "red";
+                    trashIcon.addEventListener("click", function () {
+                        listItem.remove();
+                        matchedSentences = matchedSentences.filter(item => item !== sentence.toLowerCase());
                     });
             
+                    var itemText = document.createElement("div");
+                    itemText.textContent = sentence;
+                    itemText.classList.add("editable");
+                    itemText.contentEditable = true;
+                    listItem.appendChild(trashIcon);
+                    listItem.appendChild(itemText);            
                     sentenceList.appendChild(listItem);
                 }
             });
-
+            
         }).catch((error) => {
             console.error('Error reading PDF:', error);
         });
     };
 
     reader.readAsArrayBuffer(blob);
-}
-
-function sendToExport() {
-    sessionStorage.setItem('sentencesWithKeywords', JSON.stringify(matchedSentences));
 }
