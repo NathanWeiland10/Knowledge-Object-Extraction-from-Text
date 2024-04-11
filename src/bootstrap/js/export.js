@@ -8,13 +8,12 @@ function exportData() {
 
     const keywords = Array.from(keywordsHTML.children).map(item => item.textContent.trim());
 
-    // Creating nodes
-    let str = "";
-    str += createDocNode() + "\n"; // id = 0
-    str += createHeadKeyTermsNode() + "\n"; // id = 1
-    str += createHeadAnnotationsNode() + "\n"; // id = 2
+    let str = ""; // Used to store all data that will be exported
 
-    let id = 3;
+    // Creating nodes
+    str += createDocNode() + "\n";
+
+    let id = 1;
     keywords.forEach(keyword => {
         str += createKeyTermNode(id, keyword) + "\n";
         id++;
@@ -28,10 +27,7 @@ function exportData() {
     });
 
     // Creating relationships
-    str += createHeadKeyTermsRelation() + "\n";
-    str += createHeadAnnotationsRelation() + "\n";
-
-    let relId = 2;
+    let relId = 0;
     keywords.forEach(keyword => {
         str += createKeyTermRelation(relId) + "\n";
         relId++;
@@ -62,25 +58,6 @@ function createDocNode() {
     return JSON.stringify(docNode);
 }
 
-function createHeadKeyTermsNode() {
-    const headKeyTermsNode = {type: "node",
-        id: "1",
-        labels: ["Node"],
-        properties: { name: "Key Terms Host Node", id: "KTHostNode", type: "HostNode"}
-    };
-    return JSON.stringify(headKeyTermsNode);
-}
-
-function createHeadAnnotationsNode() {
-    const headAnnotationsNode = {
-        type: "node",
-        id: "2",
-        labels: ["Node"],
-        properties: { name: "Annotating Host Node", id: "AHostNode", type: "HostNode"}
-    };
-    return JSON.stringify(headAnnotationsNode);
-}
-
 function createKeyTermNode(id, keyword) {
     const keyTermNode = {
         type: "node",
@@ -101,35 +78,13 @@ function createAnnotationNode(id, annotateId, annotation) {
     return JSON.stringify(annotationNode);
 }
 
-function createHeadKeyTermsRelation() {
-    const headKeyTermsRelation = {
-        id: "0",
-        type: "relationship",
-        label: "Document Key Terms",
-        start: { id: "1", labels: ["Node"] },
-        end: { id: "0", labels: ["Node"] }
-    };
-    return JSON.stringify(headKeyTermsRelation);
-}
-
-function createHeadAnnotationsRelation() {
-    const headAnnotationsRelation = {
-        id: "1",
-        type: "relationship",
-        label: "Document Annotations",
-        start: { id: "2", labels: ["Node"] },
-        end: { id: "0", labels: ["Node"] }
-    };
-    return JSON.stringify(headAnnotationsRelation);
-}
-
 function createKeyTermRelation(id) {
     const keyTermRelation = {
         id: `${id}`,
         type: "relationship",
         label: "Key Term",
         start: { id: `${id+1}`, labels: ["Node"] },
-        end: { id: "1", labels: ["Node"] }
+        end: { id: "0", labels: ["Node"] }
     };
     return JSON.stringify(keyTermRelation);
 }
@@ -140,7 +95,7 @@ function createAnnotationRelation(id) {
         type: "relationship",
         label: "Annotation",
         start: { id: `${id+1}`, labels: ["Node"] },
-        end: { id: "2", labels: ["Node"] }
+        end: { id: "0", labels: ["Node"] }
     };
     return JSON.stringify(keyTermRelation);
 }
