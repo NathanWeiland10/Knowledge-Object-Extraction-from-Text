@@ -21,7 +21,7 @@ function exportData() {
 
     let annotateId = 1;
     nonEmptyAnnotations.forEach(annotation => {
-        str += createAnnotationNode(id, annotateId, annotation) + "\n";
+        str += createAnnotationNode(id, annotateId, annotation, 100, 100) + "\n"; // TODO
         id++;
         annotateId++;
     });
@@ -68,12 +68,12 @@ function createKeyTermNode(id, keyword) {
     return JSON.stringify(keyTermNode);
 }
 
-function createAnnotationNode(id, annotateId, annotation) {
+function createAnnotationNode(id, annotateId, annotation, confidenceVal, likelihoodVal) {
     const annotationNode = {
         type: "node",
         id: `${id}`,
         labels: ["Node"],
-        properties: { name: "Annotation Node", data: annotation, id: `S${annotateId}`, type: "Annotation"}
+        properties: { name: "Annotation Node", data: annotation, confidence: confidenceVal, likelihood: likelihoodVal, id: `S${annotateId}`, type: "Annotation"}
     };
     return JSON.stringify(annotationNode);
 }
