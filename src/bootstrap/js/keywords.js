@@ -68,6 +68,50 @@ function addBlankAnnotation() {
     listItem.appendChild(trashIcon);
     listItem.appendChild(itemText);
 
+    // Confidence
+    var confSpan = document.createElement("span");
+    confSpan.textContent = "Confidence: ";
+    // confSpan.style.fontWeight = "bold";
+    confSpan.color = "green";
+
+    var confSlider = document.createElement("input");
+    confSlider.type = "range";
+    confSlider.min = 0;
+    confSlider.max = 100;
+
+    var confpanValue = document.createElement("span");
+    confpanValue.textContent = confSlider.value;
+
+    confSlider.oninput = function () {
+        confpanValue.innerHTML = this.value;
+    };
+
+    confSpan.appendChild(confSlider);
+    confSpan.appendChild(confpanValue);
+    listItem.appendChild(confSpan);
+
+    // Likelihood
+    var likeDiv = document.createElement("div");
+    var likeSpan = document.createElement("span");
+    likeSpan.textContent = "Likelihood: ";
+
+    var likeSlider = document.createElement("input");
+    likeSlider.type = "range";
+    likeSlider.min = 0;
+    likeSlider.max = 100;
+
+    var likeSpanValue = document.createElement("span");
+    likeSpanValue.textContent = likeSlider.value;
+
+    likeSlider.oninput = function () {
+        likeSpanValue.innerHTML = this.value;
+    };
+
+    likeDiv.appendChild(likeSpan);
+    likeDiv.appendChild(likeSlider);
+    likeDiv.appendChild(likeSpanValue);
+    listItem.appendChild(likeDiv);
+
     var sentenceList = document.getElementById('annotations');
     sentenceList.appendChild(listItem);
 }
@@ -121,10 +165,10 @@ function readPDF() {
             filteredSentences.forEach((sentence) => {
                 if (!matchedSentences.includes(sentence.toLowerCase())) {
                     matchedSentences.push(sentence.toLowerCase());
-            
+
                     var listItem = document.createElement("li");
                     listItem.className = "list-item";
-            
+
                     // Create trashcan icon
                     var trashIcon = document.createElement("i");
                     trashIcon.className = "fas fa-trash-alt";
@@ -134,17 +178,59 @@ function readPDF() {
                         listItem.remove();
                         matchedSentences = matchedSentences.filter(item => item !== sentence.toLowerCase());
                     });
-            
+
+                    // Confidence
+                    var confSpan = document.createElement("span");
+                    confSpan.textContent = "Confidence: ";
+
+                    var confSlider = document.createElement("input");
+                    confSlider.type = "range";
+                    confSlider.min = 0;
+                    confSlider.max = 100;
+
+                    var confpanValue = document.createElement("span");
+                    confpanValue.textContent = confSlider.value;
+
+                    confSlider.oninput = function () {
+                        confpanValue.innerHTML = this.value;
+                    };
+
+                    confSpan.appendChild(confSlider);
+                    confSpan.appendChild(confpanValue);
+
+                    // Likelihood
+                    var likeDiv = document.createElement("div");
+                    var likeSpan = document.createElement("span");
+                    likeSpan.textContent = "Likelihood: ";
+
+                    var likeSlider = document.createElement("input");
+                    likeSlider.type = "range";
+                    likeSlider.min = 0;
+                    likeSlider.max = 100;
+
+                    var likeSpanValue = document.createElement("span");
+                    likeSpanValue.textContent = likeSlider.value;
+
+                    likeSlider.oninput = function () {
+                        likeSpanValue.innerHTML = this.value;
+                    };
+
+                    likeDiv.appendChild(likeSpan);
+                    likeDiv.appendChild(likeSlider);
+                    likeDiv.appendChild(likeSpanValue);
+
                     var itemText = document.createElement("div");
                     itemText.textContent = sentence;
                     itemText.classList.add("editable");
                     itemText.contentEditable = true;
                     listItem.appendChild(trashIcon);
-                    listItem.appendChild(itemText);            
+                    listItem.appendChild(itemText);
+                    listItem.appendChild(confSpan);
+                    listItem.appendChild(likeDiv);
                     sentenceList.appendChild(listItem);
                 }
             });
-            
+
         }).catch((error) => {
             console.error('Error reading PDF:', error);
         });
