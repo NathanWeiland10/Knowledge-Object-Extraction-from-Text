@@ -14,28 +14,44 @@ function exportData() {
     str += createDocNode() + "\n";
 
     let id = 1;
+    let neo4jImportId = 1;
     keywords.forEach(keyword => {
-        str += createKeyTermNode(id, keyword) + "\n";
+        str += createKeyTermNode(id, keyword, neo4jImportId) + "\n";
         id++;
+        neo4jImportId++;
     });
 
     let annotateId = 1;
     nonEmptyAnnotations.forEach(annotation => {
-        str += createAnnotationNode(id, annotateId, annotation, 100, 100) + "\n"; // TODO
+
+        const listItem = Array.from(annotationsHTML.children)[annotateId - 1];
+        const confSlider = listItem.querySelector('input[type="range"]');
+        const likeSlider = listItem.querySelectorAll('input[type="range"]')[1];
+
+        const confScore = parseInt(confSlider.value, 10);
+        const likeScore = parseInt(likeSlider.value, 10);
+        let annotationText = listItem.querySelector('.editable').textContent;
+
+        annotationText = annotationText.replace(/\s+/g, ' ').trim();
+
+        str += createAnnotationNode(id, annotateId, annotationText, confScore, likeScore, neo4jImportId) + "\n";
         id++;
         annotateId++;
+        neo4jImportId++;
     });
 
     // Creating relationships
     let relId = 0;
     keywords.forEach(keyword => {
-        str += createKeyTermRelation(relId) + "\n";
+        str += createKeyTermRelation(relId, neo4jImportId) + "\n";
         relId++;
+        neo4jImportId++;
     });
 
     nonEmptyAnnotations.forEach(annotation => {
-        str += createAnnotationRelation(relId) + "\n";
+        str += createAnnotationRelation(relId, neo4jImportId) + "\n";
         relId++;
+        neo4jImportId++;
     });
 
     // Creating download link
@@ -52,36 +68,40 @@ function createDocNode() {
     const docNode = {
         type: "node",
         id: "0",
+        // neo4jImportId: "0",
         labels: ["Node"],
         properties: { name: "Document Node", id: "DocNode", type: "document" }
     };
     return JSON.stringify(docNode);
 }
 
-function createKeyTermNode(id, keyword) {
+function createKeyTermNode(id, keyword, neo4jImportId) {
     const keyTermNode = {
         type: "node",
         id: `${id}`,
+        // neo4jImportId: `${neo4jImportId}`,
         labels: ["Node"],
         properties: { name: "Key Term Node", id: keyword, type: "Key Term"}
     };
     return JSON.stringify(keyTermNode);
 }
 
-function createAnnotationNode(id, annotateId, annotation, confidenceVal, likelihoodVal) {
+function createAnnotationNode(id, annotateId, annotation, confidenceVal, likelihoodVal, neo4jImportId) {
     const annotationNode = {
         type: "node",
         id: `${id}`,
+        // neo4jImportId: `${neo4jImportId}`,
         labels: ["Node"],
-        properties: { name: "Annotation Node", data: annotation, confidence: confidenceVal, likelihood: likelihoodVal, id: `S${annotateId}`, type: "Annotation"}
+        properties: { name: "Annotation Node", data: annotation, id: `S${annotateId}`, confidence: confidenceVal, likelihood: likelihoodVal, type: "Annotation"}
     };
     return JSON.stringify(annotationNode);
 }
 
-function createKeyTermRelation(id) {
+function createKeyTermRelation(id, neo4jImportId) {
     const keyTermRelation = {
-        id: `${id}`,
         type: "relationship",
+        id: `${id}`,
+        // neo4jImportId: `${neo4jImportId}`,
         label: "Key Term",
         start: { id: `${id+1}`, labels: ["Node"] },
         end: { id: "0", labels: ["Node"] }
@@ -89,10 +109,11 @@ function createKeyTermRelation(id) {
     return JSON.stringify(keyTermRelation);
 }
 
-function createAnnotationRelation(id) {
+function createAnnotationRelation(id, neo4jImportId) {
     const keyTermRelation = {
-        id: `${id}`,
         type: "relationship",
+        id: `${id}`,
+        // neo4jImportId: `${neo4jImportId}`,
         label: "Annotation",
         start: { id: `${id+1}`, labels: ["Node"] },
         end: { id: "0", labels: ["Node"] }

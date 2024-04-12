@@ -1,4 +1,4 @@
-const formData = new FormData();
+var formData = new FormData();
 
 let filePath = "";
 
@@ -79,7 +79,7 @@ function uploadFiles(file) {
 
     const xhr = new XMLHttpRequest();
 
-    const data = new FormData();
+    data = new FormData();
     data.append('user-file', file, 'user-file.pdf');
 
     xhr.upload.addEventListener('progress', (event) => {
