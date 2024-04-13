@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Keyword Search</title>
+    <!-- Include PDF.js library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338/pdf.min.js"></script>
+</head>
+<body>
+    <h1>PDF Keyword Search</h1>
+    <input type="text" id="keywordInput" placeholder="Enter keyword">
+    <input type="file" id="pdfFileInput">
+    <button onclick="searchKeywords()">Search Keywords</button>
+    <div id="output"></div>
+
+    <!-- Embedded PDF viewer -->
+    <object data="C:\Users\frontdesk\Downloads\4120 Syllabus 2024.pdf" type="application/pdf" width="800" height="600">
+        <div>No PDF viewer available</div>
+    </object>
+
+    <script>
+        // Function to retrieve text from a specific page within a PDF document
+        async function getPageText(pageNum, PDFDocumentInstance) {
+            return new Promise(function (resolve, reject) {
+                PDFDocumentInstance.getPage(pageNum).then(function (pdfPage) {
+                    pdfPage.getTextContent().then(function (textContent) {
+                        const textItems = textContent.items;
+                        const finalString = textItems.map(item => item.str).join(" ");
+                        resolve(finalString);
+                    });
+                });
+            });
+        }
+
+        // Function to search for keywords
+        async function searchKeywords() {
+            const keyword = document.getElementById("keywordInput").value;
+            const pdfFile = document.getElementById("pdfFileInput").files[0];
+
+            const pdfData = await pdfjsLib.getDocument(pdfFile).promise;
+            const numPages = pdfData.numPages;
+
+            let foundKeywords = [];
+
+            for (let pageNum = 1; pageNum <= numPages; pageNum++) {
+                const pageText = await getPageText(pageNum, pdfData);
+                if (pageText.includes(keyword)) {
+                    foundKeywords.push(`Page ${pageNum}`);
+                }
+            }
+
+            const outputElement = document.getElementById("output");
+            outputElement.textContent =
+                foundKeywords.length > 0
+                    ? `Found keyword "${keyword}" on ${foundKeywords.join(", ")}`
+                    : `Keyword "${keyword}" not found in the PDF.`;
+        }
+    </script>
+</body>
+</html>
+
